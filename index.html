@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Por que usar R?</title>
+    <meta charset="utf-8" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Por que usar R?
+### Caio Lente
+
+---
+
+
+
+
+# Credenciais
+
+.pull-left[
+
+&lt;img src="static/caio.png" width="420" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+- [Caio Lente](https://lente.dev/)
+
+- Bacharel em Ciência da Computação pelo IME-USP
+
+- Mestando em Ciência da Computação no IME-USP
+
+- Sócio e cientista de dados na Terranova Consultoria
+
+- Sócio e professor na Curso-R Treinamentos
+
+]
+
+
+---
+# História do R
+
+.pull-left[
+
+- 1993: a primeira aparição do R
+
+- 2000: sai a v1.0, a primeira versão pronta para produção
+
+- 2006: ocorre a primeira useR!, a conferência anual de programadores R
+
+- 2011: é lançado o RStudio, a IDE mais popular para R
+
+- Atualmente (12/2020), ela já é a
+[9ª linguagem](https://www.tiobe.com/tiobe-index/) mais popular do mundo
+
+]
+
+.pull-right[
+
+&lt;img src="static/r_first_then.png" width="376" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# R Básico
+
+.pull-left[
+
+- R é uma linguagem para programação estatística
+
+  - A classe **data frame** é embutida na linguagem
+  
+  - Para facilitar a realização de experimentos, ela usa scripting
+
+- Preocupação central em compatibilidade reversa
+  
+- Por trás dos panos, praticamente roda C
+
+]
+
+.pull-right[
+
+
+```r
+df &lt;- data.frame(x = runif(5))
+
+df
+```
+
+```
+#&gt;           x
+#&gt; 1 0.2509955
+#&gt; 2 0.8634157
+#&gt; 3 0.4522537
+#&gt; 4 0.6273118
+#&gt; 5 0.3001410
+```
+
+```r
+sd(df$x)
+```
+
+```
+#&gt; [1] 0.2512464
+```
+
+]
+
+---
+# R Básico
+
+.pull-left[
+
+
+```r
+vec &lt;- c(1, 3, 4, 7, 9)
+lst &lt;- list(1, "b", TRUE)
+```
+
+
+
+```r
+vec[vec &lt; 5]
+```
+
+```
+#&gt; [1] 1 3 4
+```
+
+```r
+vec * 2
+```
+
+```
+#&gt; [1]  2  6  8 14 18
+```
+
+```r
+lst[[2]]
+```
+
+```
+#&gt; [1] "b"
+```
+
+]
+
+.pull-right[
+
+
+```r
+factor(c("G", "G", "M", "P", "P"))
+```
+
+```
+#&gt; [1] G G M P P
+#&gt; Levels: G M P
+```
+
+```r
+lm(mpg ~ wt, mtcars)
+```
+
+```
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mpg ~ wt, data = mtcars)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)           wt  
+#&gt;      37.285       -5.344
+```
+
+]
+
+---
+# R Moderno
+
+.pull-left[
+
+- O advento do `tidyverse` mudou o R para sempre
+
+  - Programação paralela
+
+  - Programação funcional
+
+  - **Tibbles** vs. data frames
+
+  - NSE: non-standard evaluation
+
+- Novas funcionalidades sem prejudicar código já implementado
+
+- Origem: [Tidy Data Manifesto](https://vita.had.co.nz/papers/tidy-data.pdf)
+
+]
+
+.pull-right[
+
+
+```r
+library(tidyverse)
+
+tb &lt;- tibble(x = runif(5))
+tb &lt;- mutate(tb, y = x * 2)
+tb &lt;- arrange(tb, y)
+
+tb
+```
+
+```
+#&gt; # A tibble: 5 x 2
+#&gt;       x     y
+#&gt;   &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 0.106 0.213
+#&gt; 2 0.116 0.232
+#&gt; 3 0.205 0.410
+#&gt; 4 0.758 1.52 
+#&gt; 5 0.866 1.73
+```
+
+]
+
+---
+# Tidyverse
+
+&lt;img src="static/tidydata_1.png" width="935" style="display: block; margin: auto;" /&gt;
+
+---
+# Tidyverse
+
+.pull-left[
+
+- `dplyr` é como o `pandas` do R, mas muito mais poderoso
+
+&lt;img src="static/dplyr_wrangling.png" width="459" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+- Pipeline: a saída de uma linha vira entrada da próxima
+
+
+```r
+mtcars %&gt;%
+  filter(gear &lt; 5) %&gt;%
+  group_by(cyl) %&gt;%
+  summarise(mpg = mean(mpg)) %&gt;%
+  mutate(kpl = mpg * 0.425) %&gt;%
+  select(cyl, kpl)
+```
+
+```
+#&gt; # A tibble: 3 x 2
+#&gt;     cyl   kpl
+#&gt;   &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1     4 11.2 
+#&gt; 2     6  8.39
+#&gt; 3     8  6.40
+```
+
+]
+
+---
+# R Funcional
+
+
+.pull-left[
+
+- Uma das maiores adições ao R foi o pacote `purrr`
+
+- Programação funcional e lambdas
+
+]
+
+.pull-right[
+
+
+```r
+map_dbl(c(1,10), ~runif(1, max=.x))
+```
+
+```
+#&gt; [1] 0.1170238 5.2411597
+```
+
+
+]
+
+&lt;img src="static/map_frosting.png" width="844" style="display: block; margin: auto;" /&gt;
+
+---
+# Pacotes e o CRAN
+
+.pull-left[
+
+- Os pacotes do R são como as bibliotecas de outras linguages
+
+- O jeito mais fácil de instalar um pacote é do CRAN
+
+  - O CRAN é um órgão que garante a qualidade dos pacotes
+  
+  - O processo de aceite é **rigoroso**
+  
+  - Há testes para 12 arquiteturas
+  
+  - A qualidade dos pacotes do R é excepcionalmente alta
+
+]
+
+.pull-right[
+
+&lt;img src="static/rpkgs.png" width="320" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# R para Visualização
+
+.pull-left[
+
+
+```r
+library(ggplot2)
+
+diamonds %&gt;%
+  ggplot(aes(price, fill = cut)) +
+  geom_histogram(binwidth = 500)
+```
+
+&lt;img src="static/plot.png" width="607" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+- Na gramática dos gráficos, definimos um gráfico em camadas
+
+  - A **estética** define os eixos
+  
+  - A **geometria** define as formas
+  
+  - Podemos empilhas estéticas e geometrias
+  
+- O `ggplot2` permite criar gráficos a partir de tabelas
+
+- Em poucas linhas, temos um gráfico preciso e elegante
+
+]
+
+---
+# R para Dashboards
+
+.pull-left[
+
+- `shiny` é o "killer app" do R
+
+- Esse pacote permite criar dashboards interativos em R
+
+  - Saber um pouco de HTML/CSS ajuda, mas é desnecessário
+  
+  - Código R existente pode ser facilmente portado
+  
+  - O [shinyapps.io](https://www.shinyapps.io/) hospeda de graça
+  
+- Alguns sites nem parecem dashboards normais
+
+]
+
+.pull-right[
+
+&lt;img src="static/shiny.png" width="320" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# R para Dashboards
+
+&lt;img src="static/scipul.png" width="912" style="display: block; margin: auto;" /&gt;
+
+---
+# R vs. Python
+
+.pull-left[
+
+```r
+# NSE não precisa de aspas
+mutate(df, Area = L*H)
+
+# Mutate para N variáveis
+mutate(df, A = L*H, V = A*10)
+
+
+# Chaining com pipes
+df %&gt;%
+  gather() %&gt;%
+  rename("k"="key","v"="value") %&gt;%
+  filter(v &gt; 1)
+
+
+
+# Operação comum
+bind_cols(df1, df2)
+```
+
+]
+
+.pull-right[
+
+```python
+# Repetição do nome da base
+df['Area'] = df.L*df.H
+
+# Lambda prolixo
+df.assign(A=lambda df: df.L*df.H,
+          V=lambda df: df.A*10)
+
+# Chaining com ponto
+df = (pd.melt(df)
+        .rename(columns={
+                'variable' : 'k',
+                'value' : 'v'})
+        .query('v &gt; 1')
+     )
+
+# Reutilização de operador
+pd.concat([df1,df2], axis=1)
+```
+
+]
+
+---
+# R vs. Python
+
+- Não existe discussão sobre a "linguagem melhor", apenas sobre qual linguagem
+é melhor para quê
+
+- Python claramente é uma linguagem mais completa e amplamente utilizada, mas
+o R também é uma linguagem moderna e extremamente capaz
+
+- O fato de o R ter sido feito para trabalhar com dados facilita certas operações
+
+  - Modelagem estatística é trivial e embutida no R
+  
+  - Leitura e manipulação de dados são parte do núcleo da linguagem
+  
+  - Pacotes estáveis e retrocompatíveis acabam com a necessidade de `pyenv`,
+  `virtualenv` ou `anaconda`
+  
+  - A comunidade do R tem crescido muito e se ajudado a continuar assim
+
+---
+# Jupyter vs. RMarkdown
+
+.pull-left[
+
+- Jupyter é incrível, mas péssimo
+[do ponto de vista científico](https://docs.google.com/presentation/d/1n2RlMdmv1p25Xy5thJUhkKGvjtV-dkAIsUXP-AL4ffI/preview#slide=id.g362da58057_0_1)
+
+  - "Hidden state and out-of-order execution"
+
+  - "Encourages bad habits"
+
+  - "Discourages modularity and testing"
+
+  - "Hinders reproducible science"
+
+  - "Makes it easy to teach poorly"
+
+]
+
+.pull-right[
+
+- RMarkdown junta código e texto de forma **reprodutível**
+
+  - Para exportar, o arquivo deve ser rodado por completo
+  
+  - É impossível esconder algo no RMarkdown
+  
+  - Múltiplos formatos: PDF, HTML, Word, etc.
+  
+  - Estes slides foram feitos inteiramente em RMarkdown!
+
+]
+
+---
+# Jupyter vs. RMarkdown
+
+&lt;img src="static/reproducibility_court.png" width="817" style="display: block; margin: auto;" /&gt;
+
+---
+# R com Python
+
+.pull-left[
+
+- E se o melhor não for R ou Python, mas sim R **e** Python?
+
+  - O pacote `reticulate` integra perfeitamente os dois ambientes
+  
+  - Ele permite invocar funções do Python de dentro do R
+  
+  - Você consegue até compartilhar objetos de um para o outro
+  
+- O port do `tensorflow` para o R e feito com `reticulate`!
+
+]
+
+.pull-right[
+
+
+```r
+df_r &lt;- tibble(x = runif(5))
+```
+
+
+```python
+df_py = r.df_r
+df_py['y'] = df_py.x*2
+```
+
+
+```r
+py$df_py
+```
+
+```
+#&gt;           x         y
+#&gt; 1 0.7111129 1.4222259
+#&gt; 2 0.7525411 1.5050823
+#&gt; 3 0.9441328 1.8882656
+#&gt; 4 0.8226734 1.6453468
+#&gt; 5 0.3105045 0.6210089
+```
+
+]
+
+---
+# R com C++
+
+.pull-left[
+
+- O R também tem uma integração íntima com o C++
+
+  - O pacote `Rcpp` consegue trazer código C++ para o R...
+  
+  - ...E código R para o C++
+  
+- Útil para aumentar a performance de funções do R
+
+- Alguns ports são feitos completamente pelo `Rcpp`
+
+- Suporte para `armadillo`, `Intel TBB`, etc.
+
+]
+
+.pull-right[
+
+&lt;img src="static/adv.png" width="267" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+# Comunidades
+
+.pull-left[
+
+&lt;img src="static/welcome_to_rstats_twitter.png" width="1071" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+- O R não é nada sem as suas comunidades e livros!
+
+  - [R-Ladies](https://www.meetup.com/pro/rladies)
+  
+  - [Carpentries](https://carpentries.org/)
+  
+  - [\#rstats](https://twitter.com/hashtag/rstats)
+  
+  - [R Brasil](https://t.me/rbrasiloficial)
+  
+  - [Curso-R](https://discourse.curso-r.com/)
+  
+  - [Ciência de Dados em R](https://livro.curso-r.com/)
+  
+  - [Zen do R](https://curso-r.github.io/zen-do-r/)
+
+]
+
+---
+class: inverse, center, middle
+# Fim
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
